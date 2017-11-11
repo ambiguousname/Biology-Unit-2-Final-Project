@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="phaser.min.js"></script>
+        <script src="mobile.js">
+        </script>
+        <link href="https://fonts.googleapis.com/css?family=Passion+One" rel="stylesheet">
+    </head>
+    <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyC1HCAKQzRkHi_lvIEzplUTEVPJnJMm6qY",
+        authDomain: "biio-62642.firebaseapp.com",
+        databaseURL: "https://biio-62642.firebaseio.com",
+        projectId: "biio-62642",
+        storageBucket: "biio-62642.appspot.com",
+        messagingSenderId: "1035540562587"
+      };
+      firebase.initializeApp(config);
+    </script>
+    <body>
+        <style>
+            input{
+                width: 50%;
+                height: 100px;
+                text-align: center;
+                margin: 50px auto;
+                display: block;
+                font-size: 40px;
+            }
+            button{
+                cursor: pointer;
+            }
+            #submit{
+                width: 50%;
+                height: 100px;
+                text-align: center;
+                margin: 0px auto;
+                display: block;
+                border: none;
+                background-color: #55aaff;
+            }
+            .chooseAnswer{
+                background-color: #000000;
+                color: #ffffff;
+                font-family: 'Passion One';
+                width: 25%;
+                height: 50px;
+                text-align: center;
+                margin: 0px auto;
+                display: block;
+                border: none;
+                font-size: 20px;
+            }
+            body{
+                background-color: black;
+                margin: 0px auto;
+                font-size: 20px;
+            }
+            span{
+                display: block;
+                text-align: center;
+            }
+            #bottom{
+                position: fixed;
+                bottom: 0px;
+                right: 0px; 
+                width: 10%;
+                height: 50px;
+                border: none;
+                background-color: #55aaff;
+                
+            }
+        </style>
+        <span id="statusText" style="color: white;"></span>
+        <div id="form">
+        <input id="code" type="text" placeholder="Room Code"/>
+        <input id="name" type="text" placeholder="Name" maxlength="30"/>
+        <button id="submit">Connect</button>
+        </div>
+        <footer>
+            <button id="bottom">Found a bug, or a problem with security?</button>
+        </footer>
+    </body>
+</html>

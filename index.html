@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+        <script>
+          // Initialize Firebase
+          var config = {
+            apiKey: "AIzaSyC1HCAKQzRkHi_lvIEzplUTEVPJnJMm6qY",
+            authDomain: "biio-62642.firebaseapp.com",
+            databaseURL: "https://biio-62642.firebaseio.com",
+            projectId: "biio-62642",
+            storageBucket: "biio-62642.appspot.com",
+            messagingSenderId: "1035540562587"
+          };
+          firebase.initializeApp(config);
+        </script>
+        <script src="phaser.min.js"></script>
+        <script src="main.js"></script>
+    </head>
+    <body>
+        <style>
+            body{
+                overflow: hidden;
+                background-color: #f4a460;
+                margin: 0;
+            }
+        </style>
+        <div id="game"></div>
+    </body>
+</html>

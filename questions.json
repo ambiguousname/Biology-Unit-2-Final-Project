@@ -1,0 +1,14 @@
+{ 
+	"questions": [
+		{
+			"question": "¿Como se dice \"How do you say\" en español?",
+			"answer": "Como se dice",
+			"fakeAnswer": "Como te dice"
+		},
+		{
+			"question": "¿Como se dice \"10\" en español?",
+			"answer": "Diez",
+			"fakeAnswer": "Once"
+		}
+	]
+}
