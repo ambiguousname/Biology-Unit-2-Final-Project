@@ -1,6 +1,6 @@
 Which plastid is responsible for photosynthesis?,,Chloroplast,,Chromoplast
 Which plastid is responsible for changing the color of a plant?,,Chromoplast,,Chloroplast
-Where does cell respiration occur?,,Mitochondria,,Chloroplast
+Cellular respiration occurs in the ______?,,Mitochondria,,Chloroplast
 What is "the powerhouse" of the cell?,,Mitochondria,,Chloroplast
 Who gave cells their name?,,Hooke,,Leeuwenhoek
 The _______ is an organelle that produces ATP,,Mitochondria,,Steroid
