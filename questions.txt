@@ -1,2 +1,6 @@
-¿Como se dice "How do you say" en español?,,Como se dice,,Como te dice
-¿Como se dice "10" en español?,,Diez,,Once
+Which plastid is responsible for photosynthesis?,,Chloroplast,,Chromoplast
+Which plastid is responsible for changing the color of a plant?,,Chromoplast,,Chloroplast
+Where does cell respiration occur?,,Mitochondria,,Chloroplast
+What is "the powerhouse" of the cell?,,Mitochondria,,Chloroplast
+Who gave cells their name?,,Hooke,,Leeuwenhoek
+The _______ is an organelle that produces ATP,,Mitochondria,,Steroid
