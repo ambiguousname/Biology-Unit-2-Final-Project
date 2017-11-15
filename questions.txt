@@ -5,5 +5,3 @@ What is "the powerhouse" of the cell?,,Mitochondria,,Chloroplast
 Who gave cells their name?,,Hooke,,Leeuwenhoek
 The _______ is an organelle that produces ATP,,Mitochondria,,Steroid
 Animal cells maintain their shape through the _______,,Cytoskeleton,,Microfilaments
-animal cells move around using ______.,,fligella,,Cilia
-plant cells move around using _____ as oars.,,Cilia,,Fligella
