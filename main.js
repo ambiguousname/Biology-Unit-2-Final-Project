@@ -1,3 +1,6 @@
+var serverDat = {
+    players: []
+};
 var provider = new firebase.auth.GoogleAuthProvider();
 firebase.auth().signInWithPopup(provider).then(function(result){
     //  The Google WebFont Loader will look for this object, so create it before loading the script.
@@ -13,15 +16,13 @@ firebase.auth().signInWithPopup(provider).then(function(result){
         }
     
     };
-    var data = {
-        players: []
-    };
+    console.log(result);
     var database = firebase.database();
     var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'game', Phaser.AUTO);
     var connectState = function(){};
     connectState.prototype = {
         preload: function(){
-            game.load.image("atkinson", "./Atkeensang.png");
+            game.load.image("mandilag", "./Manduleeg.png");
             game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
         },
         create: function(){
@@ -113,35 +114,36 @@ firebase.auth().signInWithPopup(provider).then(function(result){
                         });
                     }
                     var totalPlayers = 0;
-                    console.log(game.serverData.players);
+                    console.log(Object.keys(game.serverData.players));
                     var playersLength = Object.keys(game.serverData.players).length;
-                    for(var p in game.serverData.players){
+                    if(game.serverData.players.ignore === null || game.serverData.players.ignore === undefined){
                         playersLength -= 1;
+                    }
+                    for(var p in game.serverData.players){
                         console.log(p);
                         var player = game.serverData.players[p];
-                        if(game.serverData.players.ignore === null || game.serverData.players.ignore === undefined){
-                            playersLength -= 1;
-                        }
                         console.log(game.serverData.players);
                         if(p !== "ignore" && p !== "undefined"){
-                            
-                            var endingChar = (playersLength > 0)? "," : ".";
+                            console.log(playersLength);
+                            var endingChar = (playersLength > 0)? ", " : ".";
                             playerList += player.name + endingChar;
                             totalPlayers += 1;
-                            data.players[player.uid] = {
+                            serverDat.players[player.uid] = {
                                 name: player.name,
                                 color: player.color,
                                 score: 0
                             };
                         }
+                        playersLength -= 1;
                     }
+                    console.log(serverDat);
                     playersText.text = "Players in the game: " + playerList;
                     console.log(totalPlayers);
                     if(totalPlayers >= 10){
                         database.ref('/' + game.code + "/statuses/invites/").set(false);
                     }
                     if(totalPlayers >= 1){
-                        game.button = game.add.button(game.width/2, game.height/2 + 80, "atkinson", function(){
+                        game.button = game.add.button(game.width/2, game.height/2 + 80, "mandilag", function(){
                             database.ref('/' + game.code).off('value');
                             game.state.start('playState');
                         });
@@ -250,25 +252,54 @@ firebase.auth().signInWithPopup(provider).then(function(result){
             questionText.anchor.setTo(0.5);
             var time = 45000;
             function getScores(){
+                for(var player in game.serverData.players){
+                    firebase.database().ref('/' + game.code + '/players/' + player + '/response/').remove();
+                    firebase.database().ref('/' + game.code + '/players/' + player + '/submission/').remove();
+                }
                 var playersC = [];
                 var totalCount = 0;
-                for(var i = 0; i < Math.round(data.players.length/2); i++){
+                console.log("GET SCORES");
+                console.log(Math.round(Object.keys(serverDat.players).length/2));
+                var playerArr = [];
+                for(var player in serverDat.players){
+                    playerArr.push(serverDat.players[player]);
+                }
+                for(var i = 0; i < Math.round(Object.keys(serverDat.players).length/2); i++){ 
                     var playersR = [];
                     for(var j = 0; j < 2; j++){
-                        playersR.push(data.players[totalCount]);
+                        if(playerArr[totalCount] !== undefined){
+                            playersR.push(playerArr[totalCount]);
+                        }
                         totalCount += 1;
                     }
                     playersC.push(playersR);
                 }
+                var textArr = [];
                 playersC.forEach(function(playerR, indexH){
                     playerR.forEach(function(player, indexW){
-                        var sprite = game.add.sprite((game.width/(game.serverData.players.length + 1)) * (indexW + 1), (game.height/(game.serverData.players.length + 1)) * (indexH + 1), game.responseGraphic);
+                        console.log(player);
+                        console.log(playerR);
+                        var sprite = game.add.sprite((game.width/(Object.keys(game.serverData.players).length + 1)) * (indexW + 1), (game.height/(Object.keys(game.serverData.players).length + 1)) * (indexH + 1), game.responseGraphic);
                         var text = game.add.text(0, 0, player.name + ": " + player.score, {
-                            
+                            fill: "#ffffff",
+                            font: "35px Oxygen"
                         });
                         sprite.anchor.setTo(0.5);
+                        sprite.addChild(text);
+                        console.log("X:" + sprite.x);
+                        console.log("Y:" + sprite.y);
+                        textArr.push({
+                            sprite: sprite,
+                            text: text
+                        });
                     });
                 });
+                window.setTimeout(function(){
+                    textArr.forEach(function(text){
+                        text.sprite.destroy();
+                    });
+                    getQuestion();
+                }, 10000);
             }
             function getResults(){
                 var responseArr = [];
@@ -298,25 +329,32 @@ firebase.auth().signInWithPopup(provider).then(function(result){
                             creator = player.name;
                         }
                     });
+                    var isPrevious = false;
                     previousResponses.forEach(function(rspn){
-                        if(rspn !== response){
-                            if(playersSubmitted.length > 0){
-                                queue.push({
-                                    players: playersSubmitted,
-                                    creator: creator,
-                                    text: response
-                                });
-                            }
-                            previousResponses.push(rspn);
-                        } else {
-                            queue.forEach(function(item){
-                                if(item.text === rspn){
-                                    var crt = item.creator;
-                                    queue.creator = [crt, creator];
-                                }
-                            });
+                        if(rspn === response){
+                            isPrevious === true;
                         }
                     });
+                    if(isPrevious === false){
+                        console.log("TESTING FOR PREVIOUS");
+                        console.log(response);
+                        if(playersSubmitted.length > 0){
+                            console.log("TESTING FOR SUBMITTED");
+                            queue.push({
+                                players: playersSubmitted,
+                                creator: creator,
+                                text: response
+                            });
+                        }
+                        previousResponses.push(response);
+                    } else {
+                        queue.forEach(function(item){
+                            if(item.text === response){
+                                var crt = item.creator;
+                                queue.creator = [crt, creator];
+                            }
+                        });
+                    }
                 });
                 var rightPlayers = [];
                 playerArr.forEach(function(player){
@@ -329,9 +367,10 @@ firebase.auth().signInWithPopup(provider).then(function(result){
                     creator: "Us",
                     text: game.jsonObj.answer
                 });
-                queue.reverse();
                 var index = 0;
                 function getSubmission(){
+                    console.log(index);
+                    console.log(queue.length);
                     if(!(index >= queue.length)){
                         var sprite = game.add.sprite(game.width/2, game.height/2, game.responseGraphicLarge);
                         sprite.anchor.setTo(0.5);
@@ -342,7 +381,7 @@ firebase.auth().signInWithPopup(provider).then(function(result){
                         text.anchor.setTo(0.5);
                         statusText.text = "Let's see who voted for this...";
                         console.log(game.serverData.players);
-                        console.log(data);
+                        console.log(serverDat);
                         window.setTimeout(function(){
                             var textResponses = [];
                             var totalCount = 0;
@@ -359,6 +398,7 @@ firebase.auth().signInWithPopup(provider).then(function(result){
                             console.log(textResponses);
                             totalCount = 0;
                             var pText = [];
+                            var pUid = [];
                             textResponses.forEach(function(textResponseR, indexH){
                                 textResponseR.forEach(function(textResponse, indexW){
                                     console.log(game.serverData.players);
@@ -369,6 +409,7 @@ firebase.auth().signInWithPopup(provider).then(function(result){
                                     });
                                     text.anchor.setTo(0.5);
                                     pText.push(text);
+                                    pUid.push(queue[index].players[totalCount].uid);
                                     totalCount += 1;
                                 });
                             });
@@ -379,7 +420,7 @@ firebase.auth().signInWithPopup(provider).then(function(result){
                                     if(queue[index].creator !== "Us"){
                                         statusText.fill = game.serverData.players[queue[index].creator].color;
                                         statusText.text = queue[index].creator  + "'s lie!";
-                                        pointGain = 100;
+                                        pointGain = 500;
                                     } else if (queue[index].creator === "Us" && queue[index].text === game.jsonObj.answer){
                                         statusText.text = "THE TRUTH!";
                                         pointGain = 1000;
@@ -398,26 +439,26 @@ firebase.auth().signInWithPopup(provider).then(function(result){
                                 }
                                 
                                 var players = [];
-                                pText.forEach(function(text) {
-                                    players.push(text.text);
+                                pText.forEach(function(text, index) {
+                                    players.push(pUid[index]);
                                     text.text = pointGain;
                                 });
                                 window.setTimeout(function(){
                                     if(queue[index].creator === "Us" && queue[index].text === game.jsonObj.answer){
                                         players.forEach(function(player){
-                                            console.log(data.players);
-                                            data.players[player] = (game.serverData.players[player].score + pointGain);
+                                            console.log(serverDat.players);
+                                            serverDat.players[player].score = (serverDat.players[player].score + pointGain);
                                         });
                                     } else if (queue[index].creator === "Us" && queue[index].text === game.jsonObj.fakeAnswer){
                                         players.forEach(function(player){
-                                            data.players[player] = (game.serverData.players[player].score + pointGain);
+                                            serverDat.players[player].score = (serverDat.players[player].score + pointGain);
                                         });
                                     } else {
                                         var totalScore = 0;
                                         players.forEach(function(player){
                                             totalScore += pointGain;
                                         });
-                                        data.players[queue[index].creator] = (game.serverData.players[queue[index].creator].score + totalScore);
+                                        serverDat.players[queue[index].creator].score = (serverDat.players[queue[index].creator].score + totalScore);
                                     }
                                     sprite.destroy();
                                     text.destroy();
@@ -466,15 +507,19 @@ firebase.auth().signInWithPopup(provider).then(function(result){
                     for(var i = 0; i < Math.round(playerResponses.length/4); i++){
                         var responsesJ = [];
                         for(var j = 0; j < 4; j++){
+                            console.log(playerResponses.length);
                             if(totalCount < playerResponses.length){
-                                console.log(playerResponses[totalCount]);
                                 if(playerResponses[totalCount] !== game.jsonObj.answer){
-                                    previousSubmissions.forEach(function(response){
-                                        if(response !== playerResponses[totalCount]){
-                                            responsesJ.push(playerResponses[totalCount]);
-                                            previousSubmissions.push(playerResponses[totalCount]);
+                                    var isPreviousSubmission = false;
+                                    previousSubmissions.forEach(function(rspn){
+                                        if(rspn === playerResponses[totalCount]){
+                                            isPreviousSubmission = true;
                                         }
                                     });
+                                    if(!isPreviousSubmission){
+                                        responsesJ.push(playerResponses[totalCount]);
+                                        previousSubmissions.push(playerResponses[totalCount]);
+                                    }
                                 } else if(playerResponses[totalCount] === game.jsonObj.answer && seenBefore === true) {
                                     responsesJ.push("Angry Stork");
                                     for(var rspn in game.serverData.responses){
@@ -527,14 +572,12 @@ firebase.auth().signInWithPopup(provider).then(function(result){
                             getResults();
                         }
                     }, 1000);
-                    console.log(statusText.width);
                 }, 2000);
             }
             function displayQuestion(questionObj){
                 game.jsonObj = questionObj;
                 database.ref('/' + game.code + '/statuses/question/').set(true);
                 questionText.text = questionObj.question;
-                console.log(statusText);
                 statusText.text = "You have: " + time/1000 + " seconds.";
                 game.interval = window.setInterval(function(){
                     time -= 1000;
@@ -548,6 +591,8 @@ firebase.auth().signInWithPopup(provider).then(function(result){
                 }, 1000);
             }
             function getQuestion(){
+                time = 45000;
+                database.ref('/' + game.code + '/responses/').remove();
                 var randomQuestion = Math.floor(Math.random() * json.questions.length);
                 statusText.y = game.height/2 + 35;
                 console.log(Math.floor(Math.random() * json.questions.length));

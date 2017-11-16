@@ -1,14 +1,39 @@
 { 
 	"questions": [
 		{
-			"question": "¿Como se dice \"How do you say\" en español?",
-			"answer": "Como se dice",
-			"fakeAnswer": "Como te dice"
+			"question": "Which plastid is responsible for photosynthesis?",
+			"answer": "Chloroplast",
+			"fakeAnswer": "Chromoplast"
 		},
 		{
-			"question": "¿Como se dice \"10\" en español?",
-			"answer": "Diez",
-			"fakeAnswer": "Once"
+			"question": "Which plastid is responsible for changing the color of a plant?",
+			"answer": "Chromoplast",
+			"fakeAnswer": "Chloroplast"
+		},
+		{
+			"question": "Cellular respiration occurs in the ______?",
+			"answer": "Mitochondria",
+			"fakeAnswer": "Chloroplast"
+		},
+		{
+			"question": "What is \"the powerhouse\" of the cell?",
+			"answer": "Mitochondria",
+			"fakeAnswer": "Chloroplast"
+		},
+		{
+			"question": "Who gave cells their name?",
+			"answer": "Hooke",
+			"fakeAnswer": "Leeuwenhoek"
+		},
+		{
+			"question": "The _______ is an organelle that produces ATP",
+			"answer": "Mitochondria",
+			"fakeAnswer": "Steroid"
+		},
+		{
+			"question": "Animal cells maintain their shape through the _______",
+			"answer": "Cytoskeleton",
+			"fakeAnswer": "Microfilaments"
 		}
 	]
 }

@@ -24,7 +24,7 @@ window.onload = function(){
                 return (zeros + str).slice(-len);
             }
             function getRandomColor() {
-              var colors = ["#54C64E", "#3B968F", "#4D60A6", "#6A4CA7", "#C26C9B", "#F09086", "#F0EC86", "#27D7D0"];
+              var colors = ["#8a2be2", "#8F00FF", "#E0B0FF", "#b784a7", "#ADD8E6", "#21B6A8", "#90ee90"];
               //var textColors = ["#1C8A16", "#116963", "#1E3074", "#372167", "#7A1E50", "#973025", "#979225", "#008580"];
               var random = Math.floor(Math.random() * colors.length);
               var color = {
@@ -128,15 +128,25 @@ window.onload = function(){
                             };
                             possibleResponses.sort();
                             console.log(possibleResponses);
+                            var previousResponses = [];
                             possibleResponses.forEach(function(rspn, index){
-                                document.getElementById("form").innerHTML += "<button class=\"chooseAnswer\" id=\"player" + index + "\">" + rspn.toUpperCase() + "</button>";
-                                //For some reason, it takes time to load this, so we set a timeout.
-                                window.setTimeout(function(){
-                                    document.getElementById("player" + index).onclick = function(){
-                                        database.ref('/' + code + '/players/' + uid + "/submission").set(rspn);
-                                        document.getElementById("form").innerHTML = "";
-                                    };
-                                }, 500);
+                                var isPrevious = false;
+                                previousResponses.forEach(function(pRSPN){
+                                    if(pRSPN === rspn){
+                                        isPrevious = true;
+                                    }
+                                });
+                                if(!isPrevious){
+                                    document.getElementById("form").innerHTML += "<button class=\"chooseAnswer\" id=\"player" + index + "\">" + rspn.toUpperCase() + "</button>";
+                                    //For some reason, it takes time to load this, so we set a timeout.
+                                    window.setTimeout(function(){
+                                        document.getElementById("player" + index).onclick = function(){
+                                            database.ref('/' + code + '/players/' + uid + "/submission").set(rspn);
+                                            document.getElementById("form").innerHTML = "";
+                                        };
+                                    }, 500);
+                                    previousResponses.push(rspn.toUpperCase());
+                                }
                             });
                         });
                     } else if (data.voting === false){
